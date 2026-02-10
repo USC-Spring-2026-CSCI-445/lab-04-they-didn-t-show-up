@@ -21,6 +21,7 @@ class PController:
         self.kP = kP
         self.u_min = u_min
         self.u_max = u_max 
+        self.t_prev = 0
         ######### Your code ends here #########
 
     def control(self, err, t):
@@ -30,7 +31,7 @@ class PController:
 
         # Compute control action here
         ######### Your code starts here #########
-        u = self.kP * err * dt
+        u = self.kP * err #multiplying by dt would make it act like an integrator
         u = max(u, self.u_min)
         u = min(u, self.u_max)
         return u
@@ -51,6 +52,8 @@ class PDController:
         self.kP = kP
         self.u_min = u_min
         self.u_max = u_max
+        self.t_prev = 0
+        self.err_prev = 0
         ######### Your code ends here #########
 
     def control(self, err, t):
@@ -60,7 +63,12 @@ class PDController:
 
         # Compute control action here
         ######### Your code starts here #########
-
+        u = self.kP * err + self.kD * (err - self.err_prev) / dt
+        u = max(u, self.u_min)
+        u = min(u, self.u_max)
+        self.t_prev = t
+        self.err_prev = err
+        return u
         ######### Your code ends here #########
 
 
@@ -103,7 +111,9 @@ class RobotController:
 
             # using PD controller, compute and send motor commands
             ######### Your code starts here #########
-            uLin = self.PconLin.control(self.desired_distance - self.ir_distance)
+            uLin = self.PconLin.control(self.desired_distance - self.ir_distance, time)
+            #err = self.desired_distance - self.ir_distance
+            #u = self.pd_controller.control(err, time())
             
             uRota = self.PconRota.control(self.desired_distance - self.ir_distance)
             
