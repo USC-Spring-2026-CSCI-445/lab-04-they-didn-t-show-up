@@ -118,7 +118,7 @@ class RobotController:
             
             uRota = self.PconRota.control(self.desired_distance - self.ir_distance, time())
             
-            ctrl_msg.linear.x = uLin
+            ctrl_msg.linear.x = -uLin
             ctrl_msg.angular.z = uRota
             ######### Your code ends here #########
 
