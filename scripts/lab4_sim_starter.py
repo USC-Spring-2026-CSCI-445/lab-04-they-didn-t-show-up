@@ -121,7 +121,7 @@ class RobotController:
             ######### Your code ends here #########
 
             self.robot_ctrl_pub.publish(ctrl_msg)
-            print(f"dist: {round(self.ir_distance, 4)}\ttgt: {round(self.desired_distance, 4)}\tu: {round(uLin, 4)}")
+            print(f"dist: {round(self.ir_distance, 4)}\ttgt: {round(self.desired_distance, 4)}\tu: {round(u, 4)}")
             rate.sleep()
 
 
