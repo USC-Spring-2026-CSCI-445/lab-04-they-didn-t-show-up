@@ -80,7 +80,7 @@ class RobotController:
         ######### Your code ends here #########
 
         self.desired_distance = desired_distance  # Desired distance from the wall
-        self.ir_distance = None
+        self.ir_distance = None #distance = 1597 * pow(raw,-1.522)
 
     def robot_laserscan_callback(self, lscan: LaserScan):
         left = lscan.ranges[80:100]
