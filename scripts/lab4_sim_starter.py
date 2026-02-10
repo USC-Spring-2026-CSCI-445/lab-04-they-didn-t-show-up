@@ -112,11 +112,11 @@ class RobotController:
 
             # using PD controller, compute and send motor commands
             ######### Your code starts here #########
-            uLin = self.PconLin.control(self.desired_distance - self.ir_distance, time)
+            uLin = self.PconLin.control(self.desired_distance - self.ir_distance, time())
             #err = self.desired_distance - self.ir_distance
             #u = self.pd_controller.control(err, time())
             
-            uRota = self.PconRota.control(self.desired_distance - self.ir_distance)
+            uRota = self.PconRota.control(self.desired_distance - self.ir_distance, time())
             
             ctrl_msg.linear.x = uLin
             ctrl_msg.angular.x = uRota

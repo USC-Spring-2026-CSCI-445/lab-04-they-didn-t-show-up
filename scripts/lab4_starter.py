@@ -78,7 +78,8 @@ class RobotController:
 
         # Define PD controller for wall following here
         ######### Your code starts here #########
-
+        self.PconLin = PDController(2,.5, -.22, .22)
+        self.PconRota = PDController(2,.5, -2.84, 2.84)
         ######### Your code ends here #########
 
         self.desired_distance = desired_distance  # Desired distance from the wall
@@ -108,7 +109,14 @@ class RobotController:
 
             # using PD controller, compute and send motor commands
             ######### Your code starts here #########
-
+            uLin = self.PconLin.control(self.desired_distance - self.ir_distance, time())
+            #err = self.desired_distance - self.ir_distance
+            #u = self.pd_controller.control(err, time())
+            
+            uRota = self.PconRota.control(self.desired_distance - self.ir_distance, time())
+            
+            ctrl_msg.linear.x = uLin
+            ctrl_msg.angular.x = uRota
             ######### Your code ends here #########
 
             self.robot_ctrl_pub.publish(ctrl_msg)
