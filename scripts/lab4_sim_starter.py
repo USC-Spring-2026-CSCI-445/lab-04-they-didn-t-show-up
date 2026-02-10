@@ -84,8 +84,8 @@ class RobotController:
 
         # Define PD controller for wall-following here
         ######### Your code starts here #########
-        self.PconLin = PController(2, -.22, .22)
-        self.PconRota = PController(.5, -2.84, 2.84)
+        self.PconLin = PController(.5, -.22, .22)
+        self.PconRota = PController(.1, -2.84, 2.84)
         ######### Your code ends here #########
 
         self.desired_distance = desired_distance  # Desired distance from the wall
@@ -118,7 +118,7 @@ class RobotController:
             
             uRota = self.PconRota.control(self.desired_distance - self.ir_distance, time())
             
-            ctrl_msg.linear.x = -uLin
+            ctrl_msg.linear.x = max(.1, -uLin)
             ctrl_msg.angular.z = -uRota
             ######### Your code ends here #########
 
