@@ -18,7 +18,9 @@ class PController:
         assert u_min < u_max, "u_min should be less than u_max"
         # Initialize variables here
         ######### Your code starts here #########
-
+        self.kP = kP
+        self.u_min = u_min
+        self.u_max = u_max 
         ######### Your code ends here #########
 
     def control(self, err, t):
@@ -28,7 +30,10 @@ class PController:
 
         # Compute control action here
         ######### Your code starts here #########
-
+        u = self.kP * err * dt
+        u = max(u, self.u_min)
+        u = min(u, self.u_max)
+        return u
         ######### Your code ends here #########
 
 
@@ -43,7 +48,9 @@ class PDController:
         assert u_min < u_max, "u_min should be less than u_max"
         # Initialize variables here
         ######### Your code starts here #########
-
+        self.kP = kP
+        self.u_min = u_min
+        self.u_max = u_max
         ######### Your code ends here #########
 
     def control(self, err, t):
@@ -68,7 +75,8 @@ class RobotController:
 
         # Define PD controller for wall-following here
         ######### Your code starts here #########
-
+        self.PconLin = PController(2, -.22, .22)
+        self.PconRota = PController(2, -2.84, 2.84)
         ######### Your code ends here #########
 
         self.desired_distance = desired_distance  # Desired distance from the wall
@@ -95,7 +103,12 @@ class RobotController:
 
             # using PD controller, compute and send motor commands
             ######### Your code starts here #########
-
+            uLin = self.PconLin.control(self.desired_distance - self.ir_distance)
+            
+            uRota = self.PconRota.control(self.desired_distance - self.ir_distance)
+            
+            ctrl_msg.linear.x = uLin
+            ctrl_msg.angular.x = uRota
             ######### Your code ends here #########
 
             self.robot_ctrl_pub.publish(ctrl_msg)
