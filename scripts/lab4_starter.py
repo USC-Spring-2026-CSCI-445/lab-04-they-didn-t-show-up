@@ -8,27 +8,29 @@ from turtlebot3_msgs.msg import SensorState
 
 
 # P controller class
-class PController:
-    """
-    Generates control action taking into account instantaneous error (proportional action).
-    """
+def __init__(self, kP, u_min, u_max):
+    assert u_min < u_max, "u_min should be less than u_max"
+    # Initialize variables here
+    ######### Your code starts here #########
+    self.kP = kP
+    self.u_min = u_min
+    self.u_max = u_max 
+    self.t_prev = 0
+    ######### Your code ends here #########
 
-    def __init__(self, kP, u_min, u_max):
-        assert u_min < u_max, "u_min should be less than u_max"
-        # Initialize variables here
-        ######### Your code starts here #########
+def control(self, err, t):
+    dt = t - self.t_prev
+    if dt <= 1e-6:
+        return 0
 
-        ######### Your code ends here #########
+    # Compute control action here
+    ######### Your code starts here #########
+    u = self.kP * err #multiplying by dt would make it act like an integrator
+    u = max(u, self.u_min)
+    u = min(u, self.u_max)
+    return u
+    ######### Your code ends here #########
 
-    def control(self, err, t):
-        dt = t - self.t_prev
-        if dt <= 1e-6:
-            return 0
-
-        # Compute control action here
-        ######### Your code starts here #########
-
-        ######### Your code ends here #########
 
 # PD controller class
 class PDController:
@@ -41,7 +43,12 @@ class PDController:
         assert u_min < u_max, "u_min should be less than u_max"
         # Initialize variables here
         ######### Your code starts here #########
-
+        self.kP = kP
+        self.kD = kD
+        self.u_min = u_min
+        self.u_max = u_max
+        self.t_prev = 0
+        self.err_prev = 0
         ######### Your code ends here #########
 
     def control(self, err, t):
@@ -51,7 +58,12 @@ class PDController:
 
         # Compute control action here
         ######### Your code starts here #########
-
+        u = self.kP * err + self.kD * (err - self.err_prev) / dt
+        u = max(u, self.u_min)
+        u = min(u, self.u_max)
+        self.t_prev = t
+        self.err_prev = err
+        return u
         ######### Your code ends here #########
 
 

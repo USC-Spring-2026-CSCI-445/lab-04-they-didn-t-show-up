@@ -50,6 +50,7 @@ class PDController:
         # Initialize variables here
         ######### Your code starts here #########
         self.kP = kP
+        self.kD = kD
         self.u_min = u_min
         self.u_max = u_max
         self.t_prev = 0
