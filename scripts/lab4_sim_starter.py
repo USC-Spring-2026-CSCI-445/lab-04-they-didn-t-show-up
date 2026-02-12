@@ -92,6 +92,12 @@ class RobotController:
         self.ir_distance = None #distance = 1597 * pow(raw,-1.522)
 
     def robot_laserscan_callback(self, lscan: LaserScan):
+    # Debug: check which directions see something
+        for angle in [0, 45, 90, 135, 180, 225, 270, 315]:
+            val = lscan.ranges[angle] if angle < len(lscan.ranges) else inf
+            print(f"  {angle}°: {round(val, 2)}", end="")
+        print()
+    
         left = lscan.ranges[80:100]
         left = [x for x in left if x != inf]
         if len(left) > 0:
