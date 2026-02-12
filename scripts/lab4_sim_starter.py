@@ -123,7 +123,7 @@ class RobotController:
             u = self.angular_controller.control(err, t)
 
             ctrl_msg.linear.x = self.base_velocity
-            ctrl_msg.angular.z = u
+            ctrl_msg.angular.z = -u
             ######### Your code ends here #########
 
             self.robot_ctrl_pub.publish(ctrl_msg)
