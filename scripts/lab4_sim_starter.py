@@ -92,16 +92,16 @@ class RobotController:
         self.ir_distance = None #distance = 1597 * pow(raw,-1.522)
 
     def robot_laserscan_callback(self, lscan: LaserScan):
-    # Debug: check which directions see something
-        for angle in [0, 45, 90, 135, 180, 225, 270, 315]:
-            val = lscan.ranges[angle] if angle < len(lscan.ranges) else inf
-            print(f"  {angle}°: {round(val, 2)}", end="")
-        print()
-    
+        # Left side (wall following)
         left = lscan.ranges[80:100]
         left = [x for x in left if x != inf]
         if len(left) > 0:
             self.ir_distance = sum(left) / len(left)
+        
+        # Front (obstacle avoidance)
+        front = lscan.ranges[0:15] + lscan.ranges[345:360]
+        front = [x for x in front if x != inf]
+        self.front_distance = min(front) if len(front) > 0 else inf
 
     def control_loop(self):
 
@@ -122,8 +122,13 @@ class RobotController:
             err = self.desired_distance - self.ir_distance
             u = self.angular_controller.control(err, t)
 
-            ctrl_msg.linear.x = self.base_velocity
-            ctrl_msg.angular.z = -u
+            # Corner handling: if wall ahead, turn right harder and slow down
+            if self.front_distance < 0.5:
+                ctrl_msg.linear.x = 0.05
+                ctrl_msg.angular.z = -1.5  # turn right away from front wall
+            else:
+                ctrl_msg.linear.x = self.base_velocity
+                ctrl_msg.angular.z = -u
             ######### Your code ends here #########
 
             self.robot_ctrl_pub.publish(ctrl_msg)
