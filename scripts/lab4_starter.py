@@ -24,6 +24,7 @@ class PController:
         dt = t - self.t_prev
         if dt <= 1e-6:
             return 0
+
         u = self.kP * err
         u = max(u, self.u_min)
         u = min(u, self.u_max)
@@ -51,6 +52,7 @@ class PDController:
         dt = t - self.t_prev
         if dt <= 1e-6:
             return 0
+
         u = self.kP * err + self.kD * (err - self.err_prev) / dt
         u = max(u, self.u_min)
         u = min(u, self.u_max)
@@ -70,8 +72,8 @@ class RobotController:
 
         # Define PD controller for wall following
         ######### Your code starts here #########
-        self.angular_controller = PDController(kP=2.0, kD=0.5, u_min=-2.84, u_max=2.84)
-        self.base_velocity = 0.12  # constant forward speed (m/s)
+        self.angular_controller = PDController(kP=3.0, kD=0.5, u_min=-2.84, u_max=2.84)
+        self.base_velocity = 0.08  # slow forward speed for safety at corners
         ######### Your code ends here #########
 
         self.desired_distance = desired_distance
@@ -80,8 +82,10 @@ class RobotController:
     def sensor_state_callback(self, state: SensorState):
         raw = state.cliff
         ######### Your code starts here #########
-        # Conversion from raw sensor values to distance — use YOUR Lab 2 equation
-        distance = 1597 * pow(raw, -1.522)  # Replace with your calibration if different
+        if raw > 0:
+            distance = 1597 * pow(raw, -1.522)
+        else:
+            distance = float('inf')
         ######### Your code ends here #########
         self.ir_distance = distance
 
@@ -104,7 +108,8 @@ class RobotController:
             u = self.angular_controller.control(err, t)
 
             ctrl_msg.linear.x = self.base_velocity
-            ctrl_msg.angular.z = u
+            # Negate: positive error (too far from right wall) -> turn right (negative angular.z)
+            ctrl_msg.angular.z = -u
             ######### Your code ends here #########
 
             self.robot_ctrl_pub.publish(ctrl_msg)
