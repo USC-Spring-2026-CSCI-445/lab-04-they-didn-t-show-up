@@ -82,9 +82,10 @@ class RobotController:
     def sensor_state_callback(self, state: SensorState):
         raw = state.cliff
         if raw > 350:
-            distance = 150.0 / raw  # raw 475 → 0.32m, raw 370 → 0.41m, raw 308 → 0.49m
+            distance = -0.0012 * raw + 0.87
+            distance = max(distance, 0.05)  # floor
         else:
-            distance = 0.05
+            distance = float('inf')
         self.ir_distance = distance
 
     def control_loop(self):
