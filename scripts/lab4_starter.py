@@ -116,7 +116,7 @@ class RobotController:
 
 
 if __name__ == "__main__":
-    desired_distance = 0.4
+    desired_distance = 0.325
     controller = RobotController(desired_distance)
     try:
         controller.control_loop()
