@@ -72,7 +72,7 @@ class RobotController:
 
         # Define PD controller for wall following
         ######### Your code starts here #########
-        self.angular_controller = PController(2.0, -2.84, -2.84)
+        self.angular_controller = PController(2.0, -2.84, 2.84)
         self.base_velocity = 0.12 #for PD controller - make the kD much less for less noise
         ######### Your code ends here #########
 
