@@ -85,7 +85,7 @@ class RobotController:
         print(f"raw: {state.cliff}")
         ######### Your code starts here #########
         if raw > 0:
-            distance = 1597 * pow(raw, -1.522)
+            distance = 80.0 / raw
         else:
             distance = float('inf')
         ######### Your code ends here #########
@@ -120,7 +120,7 @@ class RobotController:
 
 
 if __name__ == "__main__":
-    desired_distance = 0.13
+    desired_distance = 0.18
     controller = RobotController(desired_distance)
     try:
         controller.control_loop()
