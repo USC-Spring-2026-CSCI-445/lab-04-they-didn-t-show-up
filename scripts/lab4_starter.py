@@ -72,7 +72,7 @@ class RobotController:
 
         # Define PD controller for wall following
         ######### Your code starts here #########
-        self.angular_controller = PDController(kP=3.0, kD=0.5, u_min=-2.84, u_max=2.84)
+        self.angular_controller = PDController(kP=2.0, kD=0.5, u_min=-2.84, u_max=2.84)
         self.base_velocity = 0.08  # slow forward speed for safety at corners
         ######### Your code ends here #########
 
