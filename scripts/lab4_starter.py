@@ -28,7 +28,7 @@ class PController:
         u = self.kP * err
         u = max(u, self.u_min)
         u = min(u, self.u_max)
-        self.t_prev = t
+        self.t_prev = time
         return u
 
 
