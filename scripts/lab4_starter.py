@@ -85,14 +85,19 @@ class RobotController:
         self.desired_distance = desired_distance  # Desired distance from the wall
         self.ir_distance = None
 
-    def sensor_state_callback(self, state: SensorState):
-        raw = state.cliff
-        ######### Your code starts here #########
-        # conversion from raw sensor values to distance. Use equation from Lab 2
-        distance = 1597 * pow(raw, -1.522)
-        ######### Your code ends here #########
-        # print(f"raw: {raw}\tdistance: {distance}")
-        self.ir_distance = distance
+    def robot_laserscan_callback(self, lscan: LaserScan):
+    #new callback function
+        # Left side (wall following)
+        left = lscan.ranges[80:100]
+        left = [x for x in left if x != inf]
+        if len(left) > 0:
+            self.ir_distance = sum(left) / len(left)
+        
+        # Front (obstacle avoidance)
+        front = lscan.ranges[0:15] + lscan.ranges[345:360]
+        front = [x for x in front if x != inf]
+        self.front_distance = min(front) if len(front) > 0 else inf
+
 
     def control_loop(self):
 
@@ -109,14 +114,17 @@ class RobotController:
 
             # using PD controller, compute and send motor commands
             ######### Your code starts here #########
-            uLin = self.PconLin.control(self.desired_distance - self.ir_distance, time())
-            #err = self.desired_distance - self.ir_distance
-            #u = self.pd_controller.control(err, time())
-            
-            uRota = self.PconRota.control(self.desired_distance - self.ir_distance, time())
-            
-            ctrl_msg.linear.x = uLin
-            ctrl_msg.angular.x = uRota
+            t = time()
+            err = self.desired_distance - self.ir_distance
+            u = self.angular_controller.control(err, t)
+
+            # Corner handling: if wall ahead, turn right harder and slow down
+            if self.front_distance < 0.5:
+                ctrl_msg.linear.x = 0.05
+                ctrl_msg.angular.z = -1.5  # turn right away from front wall
+            else:
+                ctrl_msg.linear.x = self.base_velocity
+                ctrl_msg.angular.z = -u
             ######### Your code ends here #########
 
             self.robot_ctrl_pub.publish(ctrl_msg)
