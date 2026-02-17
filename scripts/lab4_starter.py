@@ -72,8 +72,8 @@ class RobotController:
 
         # Define PD controller for wall following
         ######### Your code starts here #########
-        self.angular_controller = PDController(30.0, 1.0, -1.0, 1.0)
-        self.base_velocity = 0.15 #for PD controller - make the kD much less for less noise
+        self.angular_controller = PController(2.0, -2.84, -2.84)
+        self.base_velocity = 0.12 #for PD controller - make the kD much less for less noise
         ######### Your code ends here #########
 
         self.desired_distance = desired_distance
@@ -81,18 +81,13 @@ class RobotController:
 
     def sensor_state_callback(self, state: SensorState):
         raw = state.cliff
-        print(f"raw: {state.cliff}")
-        ######### Your code starts here #########
         if raw > 350:
-            distance = 80.0 / raw
+            distance = 150.0 / raw  # raw 475 → 0.32m, raw 370 → 0.41m, raw 308 → 0.49m
         else:
-            distance = 0.05  # assume very close if raw is low
-        self.ir_distance = distance
-        ######### Your code ends here #########
+            distance = 0.05
         self.ir_distance = distance
 
     def control_loop(self):
-
         rate = rospy.Rate(20)
 
         while not rospy.is_shutdown():
@@ -106,7 +101,7 @@ class RobotController:
 
             ######### Your code starts here #########
             t = time()
-            err = self.ir_distance - self.desired_distance
+            err = self.desired_distance - self.ir_distance
             u = self.angular_controller.control(err, t)
 
             ctrl_msg.linear.x = self.base_velocity
@@ -120,7 +115,7 @@ class RobotController:
 
 
 if __name__ == "__main__":
-    desired_distance = 0.18
+    desired_distance = 0.4
     controller = RobotController(desired_distance)
     try:
         controller.control_loop()
