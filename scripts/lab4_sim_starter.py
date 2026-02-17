@@ -21,7 +21,7 @@ class PController:
         self.kP = kP
         self.u_min = u_min
         self.u_max = u_max 
-        self.t_prev = 0
+        self.t_prev = time
         ######### Your code ends here #########
 
     def control(self, err, t):
