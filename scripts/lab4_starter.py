@@ -82,6 +82,7 @@ class RobotController:
 
     def sensor_state_callback(self, state: SensorState):
         raw = state.cliff
+        print(f"raw: {state.cliff}")
         ######### Your code starts here #########
         if raw > 0:
             distance = 1597 * pow(raw, -1.522)
@@ -119,7 +120,7 @@ class RobotController:
 
 
 if __name__ == "__main__":
-    desired_distance = 0.4
+    desired_distance = 0.13
     controller = RobotController(desired_distance)
     try:
         controller.control_loop()
