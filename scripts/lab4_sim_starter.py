@@ -82,10 +82,10 @@ class RobotController:
         self.laserscan_sub = rospy.Subscriber("/scan", LaserScan, self.robot_laserscan_callback)
         self.robot_ctrl_pub = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
 
-        # Define PD controller for wall-following here
+        # Define _PD_ controller for wall-following here
         ######### Your code starts here #########
-        self.angular_controller = PController(2.0, -2.84, 2.84)
-        self.base_velocity = 0.12
+        self.angular_controller = PDController(2.0, 0.1, -2.84, 2.84)
+        self.base_velocity = 0.08
         ######### Your code ends here #########
 
         self.desired_distance = desired_distance  # Desired distance from the wall
