@@ -102,7 +102,7 @@ class RobotController:
 
             ######### Your code starts here #########
             t = time()
-            err = self.desired_distance - self.ir_distance
+            err = self.ir_distance - self.desired_distance
             u = self.angular_controller.control(err, t)
 
             ctrl_msg.linear.x = self.base_velocity
