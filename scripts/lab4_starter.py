@@ -84,10 +84,11 @@ class RobotController:
         raw = state.cliff
         print(f"raw: {state.cliff}")
         ######### Your code starts here #########
-        if raw > 0:
+        if raw > 350:
             distance = 80.0 / raw
         else:
-            distance = float('inf')
+            distance = 0.05  # assume very close if raw is low
+        self.ir_distance = distance
         ######### Your code ends here #########
         self.ir_distance = distance
 
